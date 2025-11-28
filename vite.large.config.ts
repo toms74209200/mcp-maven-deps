@@ -1,9 +1,11 @@
 /// <reference types="vitest" />
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
-    include: ["**/*.medium.{test,spec}.?(c|m)[jt]s?(x)"],
+    include: ["**/*.large.{test,spec}.?(c|m)[jt]s?(x)"],
     reporters: Deno.env.get("CI") ? ["verbose", "github-actions"] : ["verbose"],
+    testTimeout: 30000,
+    maxConcurrency: 1,
   },
 });

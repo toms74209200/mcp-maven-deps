@@ -1,0 +1,14 @@
+name: On Pull Request(NPM)
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - '*.json'
+      - '*.ts'
+      - '.github/workflows/on-pullreq-npm.yml'
+
+jobs:
+  large-test:
+    uses: ./.github/workflows/job-test-large.yml

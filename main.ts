@@ -48,7 +48,11 @@ async function searchDependencies({
   mavenUrl.searchParams.set("wt", "json");
 
   const mavenResponse = await fetch(mavenUrl, {
-    headers: { "User-Agent": "mcp-maven-deps/0.1.0" },
+    headers: {
+      "User-Agent": "mcp-maven-deps/0.1.0",
+      "Connection": "close",
+    },
+    signal: (new AbortController()).signal,
   })
     .then((res) => res.ok ? res.json() : null)
     .catch(() => null) as { response?: { docs?: unknown[] } } | null;
@@ -88,7 +92,11 @@ async function searchDependencies({
     gradleUrl.searchParams.set("offset", offset.toString());
 
     const gradleResponse = await fetch(gradleUrl, {
-      headers: { "User-Agent": "mcp-maven-deps/0.1.0" },
+      headers: {
+        "User-Agent": "mcp-maven-deps/0.1.0",
+        "Connection": "close",
+      },
+      signal: (new AbortController()).signal,
     })
       .then((res) => res.json())
       .catch(() => null) as { plugins?: unknown[] } | null;

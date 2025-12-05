@@ -71,7 +71,7 @@ async function searchDependencies({
         p?: string;
         timestamp: number;
       };
-      const version = d.v || d.latestVersion!;
+      const version = d.v ?? d.latestVersion ?? "";
       const versionType = detectVersionType(version);
       return {
         groupId: d.g,
@@ -116,7 +116,7 @@ async function searchDependencies({
           version: p.version,
           type: "gradle-plugin" as const,
           versionType,
-          timestamp: p.date || new Date().toISOString(),
+          timestamp: p.date ?? null,
           description: p.description,
           repository: "Gradle Plugin Portal",
         };
@@ -124,15 +124,13 @@ async function searchDependencies({
       .filter((result) => !stableOnly || result.versionType === "stable");
   })();
 
-  const paginatedResults = results.slice(offset, offset + limit);
-
   return {
     content: [
       {
         type: "text" as const,
         text: JSON.stringify(
           {
-            results: paginatedResults,
+            results,
             totalCount: results.length,
           },
           null,

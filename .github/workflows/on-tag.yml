@@ -1,0 +1,24 @@
+name: On Tag
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  large-test:
+    uses: ./.github/workflows/job-test-large.yml
+  publish:
+    needs:
+      - large-test
+    permissions:
+      contents: write
+      id-token: write
+    uses: ./.github/workflows/job-publish.yml
+  build-binaries:
+    needs:
+      - publish
+    permissions:
+      contents: write
+    uses: ./.github/workflows/job-build-binaries.yml
+

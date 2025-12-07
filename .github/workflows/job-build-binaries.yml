@@ -1,0 +1,54 @@
+name: Job - Build Binaries
+
+on:
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      matrix:
+        target:
+          - x86_64-unknown-linux-gnu
+          - aarch64-unknown-linux-gnu
+    steps:
+      - uses: actions/checkout@v6
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Install Dependencies
+        run: deno install
+      - name: Build Binary
+        run: |
+          deno compile \
+            --allow-env \
+            --allow-net \
+            --target ${{ matrix.target }} \
+            --output mcp-maven-deps-${{ matrix.target }} \
+            main.ts
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-maven-deps-${{ matrix.target }}
+          path: mcp-maven-deps-${{ matrix.target }}
+
+  upload:
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Upload to Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload ${{ github.ref_name }} \
+            --repo ${{ github.repository }} \
+            artifacts/mcp-maven-deps-x86_64-unknown-linux-gnu/mcp-maven-deps-x86_64-unknown-linux-gnu \
+            artifacts/mcp-maven-deps-aarch64-unknown-linux-gnu/mcp-maven-deps-aarch64-unknown-linux-gnu

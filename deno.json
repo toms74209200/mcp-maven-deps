@@ -1,4 +1,22 @@
 {
+    "name": "@toms/mcp-maven-deps",
+    "description": "Model Context Protocol(MCP) server for searching Maven and Gradle dependencies",
+    "version": "0.1.0",
+    "license": "MIT",
+    "exports": {
+        ".": "./main.ts"
+    },
+    "publish": {
+        "include": [
+            "main.ts",
+            "LICENSE",
+            "README.md"
+        ],
+        "exclude": [
+            "*.config.ts",
+            "*.test.ts"
+        ]
+    },
     "tasks": {
         "test": "vitest run --silent --config ./vite.config.ts",
         "test:large": "vitest run --silent --config ./vite.large.config.ts"
